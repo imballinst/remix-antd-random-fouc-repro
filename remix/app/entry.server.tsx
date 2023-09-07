@@ -131,15 +131,14 @@ function handleBrowserRequest(
           );
 
           const style = extractStyle(cache)
-
+          
+          // Re-order the link from behind to front.
           const parsed = load(head)
           const links = parsed('link')
           parsed('link').remove()
-          const linksString = links.toArray().map(el => `<link rel="${el.attribs.rel}" href="${el.attribs.href}" />`).join('')
-          console.info(linksString, parsed('head').html())
           
           body.write(
-          `<!DOCTYPE html><html><head>${linksString}${style}${parsed('head').html()}</head><body><div id="root">`,
+          `<!DOCTYPE html><html><head>${links.toString()}${parsed('head').html()}${style}</head><body><div id="root">`,
           );
 
           pipe(body);
