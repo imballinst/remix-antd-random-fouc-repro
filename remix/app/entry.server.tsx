@@ -14,6 +14,8 @@ import { renderToPipeableStream } from "react-dom/server";
 
 import { createCache, StyleProvider, extractStyle } from '@ant-design/cssinjs'
 import { renderHeadToString } from 'remix-island';
+import {load } from 'cheerio'
+
 import { Head } from './root';
 
 const ABORT_DELAY = 5_000;
@@ -129,12 +131,17 @@ function handleBrowserRequest(
           );
 
           const style = extractStyle(cache)
-          // This is probably the key?
-          const trimmed = head.replace("<!--remix-island-start-->", "").replace("<!--remix-island-end-->", "")
+
+          const parsed = load(head)
+          const links = parsed('link')
+          parsed('link').remove()
+          const linksString = links.toArray().map(el => `<link rel="${el.attribs.rel}" href="${el.attribs.href}" />`).join('')
+          console.info(linksString, parsed('head').html())
           
           body.write(
-          `<!DOCTYPE html><html><head>${style}${trimmed}</head><body><div id="root">`,
+          `<!DOCTYPE html><html><head>${linksString}${style}${parsed('head').html()}</head><body><div id="root">`,
           );
+
           pipe(body);
           body.write(`</div></body></html>`);
         },

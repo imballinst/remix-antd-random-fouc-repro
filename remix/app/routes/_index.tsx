@@ -1,5 +1,5 @@
 import type { V2_MetaFunction } from "@remix-run/node";
-import { Button, Typography } from "antd";
+import { Button, Form, Input, Typography } from "antd";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -18,6 +18,12 @@ export default function Index() {
       <Typography.Title level={1}>Hello world</Typography.Title>
 
       <Typography.Text>Notice the random FOUCs after the load event fires. The FOUCs only apply for the Tailwind styles and not for the Ant styles (because we have inlined the styles already).</Typography.Text>
+
+      <Form>
+        <Form.Item>
+          <Input />
+        </Form.Item>
+      </Form>
 
       <Button>Test button</Button>
 {/* 
